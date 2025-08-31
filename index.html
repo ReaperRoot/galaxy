@@ -53,8 +53,14 @@
     .meta{font-size:.85rem;color:var(--muted);margin-top:2px}
     .pill{display:inline-block;margin-top:6px;font-size:.72rem;color:#e7e7ea;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:4px 8px;border-radius:999px}
     .badge{position:absolute;left:10px;top:10px;font-size:.7rem;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:3px 8px;border-radius:999px}
-    .btn-row{display:flex;gap:8px;margin-top:10px}
-    .btn-dl{flex:1;display:inline-flex;align-items:center;justify-content:center;height:36px;border-radius:10px;text-decoration:none;font-weight:800;background:var(--grad);color:#fff}
+
+    /* ===== Download Row: horizontal & compact ===== */
+    .btn-row{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:10px;overflow-x:auto;padding-bottom:4px;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .btn-row::-webkit-scrollbar{display:none}
+
+    .btn-dl{display:inline-flex;align-items:center;justify-content:center;height:30px;padding:0 10px;border-radius:999px;text-decoration:none;font-weight:800;font-size:.82rem;background:#2a2d39;color:#e7e7ea;border:1px solid rgba(255,255,255,.14);transition:transform .15s ease, opacity .15s ease}
+    .btn-dl:hover{transform:translateY(-1px);opacity:.95}
+    .btn-dl.primary{background:var(--grad);color:#fff;border-color:transparent}
 
     /* ===== Skeleton ===== */
     .skeleton{position:relative;overflow:hidden;background:#222;border-radius:var(--radius)}
@@ -155,7 +161,8 @@
           version:d.version||'v1.0',
           size:d.size||'',
           category:d.category||'',
-          updatedAt:d.updatedAt? (d.updatedAt.toDate? d.updatedAt.toDate(): new Date(d.updatedAt)) : null
+          updatedAt:d.updatedAt? (d.updatedAt.toDate? d.updatedAt.toDate(): new Date(d.updatedAt)) : null,
+          links: Array.isArray(d.links) && d.links.length ? d.links : null
         });
       });
       statCount.textContent=allApps.length+"+";
@@ -179,6 +186,8 @@
       entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('show'); io.unobserve(en.target);} });
     },{root:null,threshold:.1});
 
+    function sanitizeUrl(u){ try{ const url=new URL(u); return url.href; }catch(e){ return '#'; } }
+
     function displayApps(apps){
       appGrid.innerHTML='';
       if(apps.length===0){messageArea.textContent='រកមិនឃើញ app!';messageArea.style.display='block';return;}
@@ -191,6 +200,17 @@
         const meta = [app.version, app.size].filter(Boolean).join(' • ');
         const cat = app.category ? `<span class="pill">${app.category}</span>` : '';
         const upd = app.updatedAt ? `<div class="meta">Updated ${relDayLabel(app.updatedAt)}</div>` : '';
+
+        const links = (app.links && app.links.length)
+          ? app.links.map(l=>({ label: l.label || 'Mirror', url: sanitizeUrl(l.url), primary: !!l.primary }))
+          : [{ label:'Download', url: sanitizeUrl(app.downloadLink), primary: true }];
+
+        const buttonsHtml = links.map(l => `
+          <a class="btn-dl ${l.primary ? 'primary':''}" href="${l.url}" target="_blank" rel="noopener" aria-label="${l.label} ${app.name}">
+            ${l.label}
+          </a>
+        `).join('');
+
         card.innerHTML=`
           ${isNew?'<span class="badge">NEW</span>':''}
           <img src="${app.logoUrl}" class="logo" alt="${app.name} logo" loading="lazy">
@@ -198,9 +218,8 @@
           <div class="meta">${meta || '—'}</div>
           ${cat}
           ${upd}
-          <div class="btn-row">
-            <a class="btn-dl" href="${app.downloadLink}" target="_blank" rel="noopener" aria-label="Download ${app.name}">Download</a>
-          </div>`;
+          <div class="btn-row">${buttonsHtml}</div>`;
+
         frag.appendChild(card); io.observe(card);
       });
       appGrid.appendChild(frag);
