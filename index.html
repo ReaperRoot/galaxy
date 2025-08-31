@@ -16,7 +16,7 @@
     body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
     .container{max-width:1100px;margin:0 auto;padding:var(--pad)}
 
-    /* ===== Topbar ===== */
+    /* ===== Topbar (brand only) ===== */
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
     .brand{font-weight:800;font-size:1.25rem;background:var(--grad);-webkit-background-clip:text;color:transparent;letter-spacing:.2px}
     .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
@@ -35,34 +35,26 @@
     .stat .big{font-size:1.15rem;font-weight:800}
     .stat .small{font-size:.82rem;color:var(--muted)}
 
-    /* ===== Horizontal App Row ===== */
-    #app-grid{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
-    #app-grid::-webkit-scrollbar{display:none}
-
-    /* ===== Cards (compact) ===== */
-    .card{flex:0 0 auto;min-width:190px;scroll-snap-align:start;position:relative;background:#1c1c21;padding:12px;border-radius:var(--radius);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.45);transition:.35s;opacity:0;transform:translateY(10px)}
+    /* ===== Grid & Cards ===== */
+    #app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--gap)}
+    .card{position:relative;background:#1c1c21;padding:14px;border-radius:var(--radius);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.45);transition:.35s;opacity:0;transform:translateY(10px)}
     .card.show{opacity:1;transform:translateY(0)}
-    .logo{width:56px;height:56px;border-radius:12px;object-fit:cover;border:1px solid rgba(255,255,255,.08);margin:0 auto 10px}
-    .name{font-size:.95rem;font-weight:800}
-    .meta{font-size:.8rem;color:var(--muted);margin-top:2px}
-    .pill{display:inline-block;margin-top:6px;font-size:.7rem;color:#e7e7ea;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:3px 6px;border-radius:999px}
-    .badge{position:absolute;left:10px;top:10px;font-size:.68rem;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:2px 7px;border-radius:999px}
-
-    /* ===== Download Row: horizontal & compact ===== */
-    .btn-row{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:8px;overflow-x:auto;padding-bottom:4px;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-    .btn-row::-webkit-scrollbar{display:none}
-    .btn-dl{display:inline-flex;align-items:center;justify-content:center;height:30px;padding:0 10px;border-radius:999px;text-decoration:none;font-weight:800;font-size:.82rem;background:#2a2d39;color:#e7e7ea;border:1px solid rgba(255,255,255,.14);transition:transform .15s ease, opacity .15s ease}
-    .btn-dl:hover{transform:translateY(-1px);opacity:.95}
-    .btn-dl.primary{background:var(--grad);color:#fff;border-color:transparent}
+    .logo{width:76px;height:76px;border-radius:16px;object-fit:cover;border:1px solid rgba(255,255,255,.08);margin:0 auto 10px}
+    .name{font-weight:800}
+    .meta{font-size:.85rem;color:var(--muted);margin-top:2px}
+    .pill{display:inline-block;margin-top:6px;font-size:.72rem;color:#e7e7ea;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:4px 8px;border-radius:999px}
+    .badge{position:absolute;left:10px;top:10px;font-size:.7rem;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:3px 8px;border-radius:999px}
+    .btn-row{display:flex;gap:8px;margin-top:10px}
+    .btn-dl{flex:1;display:inline-flex;align-items:center;justify-content:center;height:36px;border-radius:10px;text-decoration:none;font-weight:800;background:var(--grad);color:#fff}
 
     /* ===== Skeleton ===== */
     .skeleton{position:relative;overflow:hidden;background:#222;border-radius:var(--radius)}
     .skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shine 1.2s infinite}
     @keyframes shine{to{transform:translateX(100%)}}
     .sk-card{padding:14px}
-    .sk-avatar{width:56px;height:56px;border-radius:12px;margin:0 auto 10px}
+    .sk-avatar{width:76px;height:76px;border-radius:16px;margin:0 auto 10px}
     .sk-line{height:12px;border-radius:8px;margin:8px auto}
-    .sk-btn{height:28px;border-radius:10px}
+    .sk-btn{height:34px;border-radius:10px}
 
     footer{text-align:center;color:#7a7f8a;padding:18px;margin-top:22px;border-top:1px solid rgba(255,255,255,.08)}
     .offline{display:none;text-align:center;background:#241f1f;color:#f2dede;border:1px solid #5c3434;padding:8px;border-radius:10px;margin:10px 0}
@@ -76,6 +68,7 @@
   <div class="container">
     <div class="topbar">
       <div class="brand">GALAXY App Store</div>
+      <!-- search area removed -->
     </div>
 
     <div id="offlineBanner" class="offline">You are offline. Browsing cached UI.</div>
@@ -93,6 +86,8 @@
         <div class="stat"><div class="big">⚡</div><div class="small">Smooth UI</div></div>
       </div>
     </section>
+
+    <!-- ❌ FILTER SECTION REMOVED: All / A–M / N–Z -->
 
     <main>
       <div id="message-area" style="text-align:center;margin:14px 0;color:#aaa">Loading apps…</div>
@@ -117,7 +112,9 @@
     let allApps=[];let currentSort='latest';
 
     function updateOnline(){ offlineBanner.classList.toggle('show', !navigator.onLine); }
-    window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);updateOnline();
+    window.addEventListener('online',updateOnline);
+    window.addEventListener('offline',updateOnline);
+    updateOnline();
 
     function setSkeleton(n=8){
       messageArea.style.display='block';
@@ -144,8 +141,7 @@
           version:d.version||'v1.0',
           size:d.size||'',
           category:d.category||'',
-          updatedAt:d.updatedAt? (d.updatedAt.toDate? d.updatedAt.toDate(): new Date(d.updatedAt)) : null,
-          links: Array.isArray(d.links) && d.links.length ? d.links : null
+          updatedAt:d.updatedAt? (d.updatedAt.toDate? d.updatedAt.toDate(): new Date(d.updatedAt)) : null
         });
       });
       statCount.textContent=allApps.length+"+";
@@ -158,13 +154,8 @@
 
     function render(){
       let list=[...allApps];
-      if(currentSort==='latest'){
-        list.sort((a,b)=>{
-          const at=a.updatedAt ? a.updatedAt.getTime() : 0;
-          const bt=b.updatedAt ? b.updatedAt.getTime() : 0;
-          return bt - at; // newest first
-        });
-      }else{
+      // keep Sort: Latest/A–Z only
+      if(currentSort==='az'){
         list.sort((a,b)=>a.name.localeCompare(b.name));
       }
       displayApps(list);
@@ -173,8 +164,6 @@
     const io=new IntersectionObserver((entries)=>{
       entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('show'); io.unobserve(en.target);} });
     },{root:null,threshold:.1});
-
-    function sanitizeUrl(u){ try{ const url=new URL(u); return url.href; }catch(e){ return '#'; } }
 
     function displayApps(apps){
       appGrid.innerHTML='';
@@ -188,17 +177,6 @@
         const meta = [app.version, app.size].filter(Boolean).join(' • ');
         const cat = app.category ? `<span class="pill">${app.category}</span>` : '';
         const upd = app.updatedAt ? `<div class="meta">Updated ${relDayLabel(app.updatedAt)}</div>` : '';
-
-        const links = (app.links && app.links.length)
-          ? app.links.map(l=>({ label: l.label || 'Mirror', url: sanitizeUrl(l.url), primary: !!l.primary }))
-          : [{ label:'Download', url: sanitizeUrl(app.downloadLink), primary: true }];
-
-        const buttonsHtml = links.map(l => `
-          <a class="btn-dl ${l.primary ? 'primary':''}" href="${l.url}" target="_blank" rel="noopener" aria-label="${l.label} ${app.name}">
-            ${l.label}
-          </a>
-        `).join('');
-
         card.innerHTML=`
           ${isNew?'<span class="badge">NEW</span>':''}
           <img src="${app.logoUrl}" class="logo" alt="${app.name} logo" loading="lazy">
@@ -206,8 +184,9 @@
           <div class="meta">${meta || '—'}</div>
           ${cat}
           ${upd}
-          <div class="btn-row">${buttonsHtml}</div>`;
-
+          <div class="btn-row">
+            <a class="btn-dl" href="${app.downloadLink}" target="_blank" rel="noopener" aria-label="Download ${app.name}">Download</a>
+          </div>`;
         frag.appendChild(card); io.observe(card);
       });
       appGrid.appendChild(frag);
@@ -217,11 +196,11 @@
     sortToggle.addEventListener('click',()=>{
       currentSort=currentSort==='latest'?'az':'latest';
       sortToggle.textContent='Sort: '+(currentSort==='latest'?'Latest':'A–Z');
-      render();
+      render()
     });
-    document.getElementById('scrollToApps').addEventListener('click',()=>{
-      document.getElementById('app-grid').scrollIntoView({behavior:'smooth'})
-    });
+    // ✅ fix the scroll button id (use scrollToApps)
+    document.getElementById('scrollToApps')
+      .addEventListener('click',()=>{document.getElementById('app-grid').scrollIntoView({behavior:'smooth'})});
   </script>
 </body>
 </html>
