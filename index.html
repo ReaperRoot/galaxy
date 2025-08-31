@@ -11,323 +11,152 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <style>
-    :root{--bg:#0f0f11;--surface:#16171a;--surface-2:#1b1d22;--text:#f5f7fb;--muted:#a2a8b4;--grad:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);--radius:16px;--gap:14px;--pad:16px;--ring:0 0 0 2px rgba(99,102,241,.45);--elev:0 10px 30px rgba(0,0,0,.45)}
+    :root{--bg:#0f0f11;--surface:#16171a;--surface-2:#1b1d22;--text:#f5f7fb;--muted:#a2a8b4;--grad:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);--radius:16px;--gap:14px;--pad:16px;}
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
-    .container{max-width:1100px;margin:0 auto;padding:var(--pad);padding-bottom:86px}
+    body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+    .container{max-width:1100px;margin:0 auto;padding:var(--pad)}
 
-    /* ===== Topbar ===== */
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
-    .brand{font-weight:800;font-size:1.25rem;background:var(--grad);-webkit-background-clip:text;color:transparent;letter-spacing:.2px}
-    .actions{display:flex;gap:8px}
-    .iconbtn{background:#202228;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:8px 10px;cursor:pointer}
+    .brand{font-weight:800;font-size:1.25rem;background:var(--grad);-webkit-background-clip:text;color:transparent}
 
-    /* ===== Tabs (top like Play Store) ===== */
-    .tabs{display:flex;gap:18px;overflow-x:auto;padding:8px 2px 10px;border-bottom:1px solid rgba(255,255,255,.08)}
-    .tabs::-webkit-scrollbar{display:none}
-    .tab{background:none;border:0;color:#cfd3db;font-weight:800;padding:6px 2px;white-space:nowrap;cursor:pointer;position:relative}
-    .tab.active{color:#fff}
-    .tab.active::after{content:"";position:absolute;left:0;right:0;bottom:-9px;height:3px;background:var(--grad);border-radius:2px}
-
-    /* ===== Hero banner ===== */
-    .banner{margin:12px 0 18px;background:var(--surface-2);border:1px solid rgba(255,255,255,.08);border-radius:18px;padding:14px;display:grid;grid-template-columns:100px 1fr auto;gap:12px;align-items:center;box-shadow:var(--elev)}
-    .banner .art{width:92px;height:92px;border-radius:20px;object-fit:cover;border:1px solid rgba(255,255,255,.08)}
-    .banner .title{font-weight:900;font-size:1.05rem}
-    .banner .sub{color:var(--muted);font-size:.9rem;margin-top:2px}
-    .cta{padding:10px 16px;border-radius:12px;border:0;background:var(--grad);color:#fff;font-weight:800;cursor:pointer}
-
-    /* ===== Section head + chips ===== */
     .section-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 12px}
-    .section-title{font-size:1.05rem;font-weight:900}
-    .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
-    .chips::-webkit-scrollbar{display:none}
-    .chip{padding:8px 14px;border-radius:999px;background:#23252a;color:#cfd3db;border:1px solid rgba(255,255,255,.1);cursor:pointer;font-weight:800;white-space:nowrap}
-    .chip.active{background:linear-gradient(90deg,#31345a,#2d2e48);border-color:rgba(99,102,241,.5)}
+    .section-title{font-size:1.25rem;font-weight:800;position:relative}
+    .section-title::after{content:"";display:block;height:2px;width:64px;margin-top:6px;background:var(--grad);border-radius:2px}
 
-    /* ===== App list (list style like Play suggestions) ===== */
-    .list{display:grid;gap:10px}
-    .row{display:grid;grid-template-columns:76px 1fr auto;gap:12px;align-items:center;background:#1a1a20;border:1px solid rgba(255,255,255,.06);border-radius:14px;padding:10px}
-    .logo{width:64px;height:64px;border-radius:14px;object-fit:cover;border:1px solid rgba(255,255,255,.08)}
+    .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--gap)}
+    .card{position:relative;background:#1c1c21;padding:14px;border-radius:var(--radius);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.45)}
+    .logo{width:76px;height:76px;border-radius:16px;object-fit:cover;border:1px solid rgba(255,255,255,.08);margin:0 auto 10px}
     .name{font-weight:800}
-    .meta{font-size:.85rem;color:var(--muted)}
-    .pill{display:inline-block;margin-top:6px;font-size:.72rem;color:#e7e7ea;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:4px 8px;border-radius:999px}
-    .btn-dl{display:inline-flex;align-items:center;justify-content:center;height:36px;border-radius:10px;text-decoration:none;font-weight:800;background:var(--grad);color:#fff;padding:0 14px}
-    .badge{font-size:.7rem;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:3px 8px;border-radius:999px;margin-right:8px}
+    .meta{font-size:.85rem;color:var(--muted);margin-top:2px}
+    .pill{display:inline-block;margin-top:6px;font-size:.72rem;color:#e7e7ea;background:#26283a;padding:4px 8px;border-radius:999px}
+    .badge{position:absolute;left:10px;top:10px;font-size:.7rem;background:#26283a;padding:3px 8px;border-radius:999px}
+    .btn-dl{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:10px;text-decoration:none;font-weight:800;background:var(--grad);color:#fff}
 
-    /* ===== Skeleton ===== */
-    .skeleton{position:relative;overflow:hidden;background:#222;border-radius:14px;border:1px solid rgba(255,255,255,.06)}
-    .skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shine 1.2s infinite}
-    @keyframes shine{to{transform:translateX(100%)}}
-    .sk-row{display:grid;grid-template-columns:76px 1fr 80px;gap:12px;align-items:center;padding:10px}
-    .sk-avatar{width:64px;height:64px;border-radius:14px}
-    .sk-line{height:12px;border-radius:8px;margin:6px 0}
+    .tabs{display:flex;gap:10px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:14px}
+    .tab{flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:600;background:transparent;color:var(--muted)}
+    .tab.active{color:#fff;border-bottom:3px solid #6366f1}
 
-    /* ===== Bottom nav ===== */
-    .bottom-nav{position:fixed;left:0;right:0;bottom:0;background:#111215;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-around;padding:8px 10px;z-index:20}
-    .bbtn{display:flex;flex-direction:column;align-items:center;gap:2px;background:none;border:0;color:#cfd3db;font-weight:700;cursor:pointer}
-    .bbtn.active{color:#fff}
-
-    footer{text-align:center;color:#7a7f8a;padding:18px;margin-top:22px;border-top:1px solid rgba(255,255,255,.08)}
-    .offline{display:none;text-align:center;background:#241f1f;color:#f2dede;border:1px solid #5c3434;padding:8px;border-radius:10px;margin:10px 0}
-    .offline.show{display:block}
-
-    /* Search overlay */
-    .search-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-start;justify-content:center;padding-top:10vh;z-index:30}
-    .search-card{width:min(640px,92vw);background:#16171a;border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:14px}
-    .search-row{display:flex;gap:8px}
-    .search-row input{flex:1;background:#202228;border:1px solid rgba(255,255,255,.1);border-radius:12px;color:#fff;padding:10px 12px;font-weight:600}
-    .search-row button{background:var(--grad);border:0;border-radius:12px;color:#fff;font-weight:800;padding:10px 14px}
-
-    @media (max-width:760px){.banner{grid-template-columns:72px 1fr auto}.tabs{gap:14px}}
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#16171a;border-top:1px solid rgba(255,255,255,.1)}
+    .nav-btn{flex:1;padding:12px;color:#aaa;font-weight:700;text-align:center;cursor:pointer}
+    .nav-btn.active{color:#fff;background:linear-gradient(90deg,#6366f1,#a855f7)}
   </style>
 </head>
 <body>
-  <h1 class="visually-hidden">GALAXY App Store – APKs</h1>
   <div class="container">
     <div class="topbar">
       <div class="brand">GALAXY App Store</div>
-      <div class="actions">
-        <button id="openSearch" class="iconbtn" aria-label="Search">🔍</button>
-        <button id="scrollToApps" class="iconbtn" aria-label="Browse">🧭</button>
-      </div>
     </div>
 
-    <div class="tabs" id="tabs">
+    <!-- Tabs -->
+    <div class="tabs">
       <button class="tab active" data-tab="for-you">For you</button>
-      <button class="tab" data-tab="top">Top charts</button>
-      <button class="tab" data-tab="devices">Other devices</button>
-      <button class="tab" data-tab="kids">Kids</button>
+      <button class="tab" data-tab="top-charts">Top charts</button>
+      <button class="tab" data-tab="categories">Categories</button>
     </div>
 
-    <div id="offlineBanner" class="offline">You are offline. Browsing cached UI.</div>
-
-    <!-- Featured banner (auto from latest or featured=true) -->
-    <section class="banner" id="banner" style="display:none">
-      <img class="art" id="bannerArt" alt="featured"/>
-      <div>
-        <div class="title" id="bannerTitle">Featured</div>
-        <div class="sub" id="bannerSub">Ends on —</div>
+    <!-- Suggested -->
+    <section>
+      <div class="section-head">
+        <div class="section-title">Suggested for you</div>
       </div>
-      <a class="cta" id="bannerCta" target="_blank" rel="noopener">Open</a>
+      <div id="suggested-grid" class="app-grid"></div>
     </section>
 
-    <div class="section-head">
-      <div class="section-title">Suggested for you</div>
-      <div class="chips" id="chips"><!-- dynamic categories here --></div>
-    </div>
+    <!-- Recommended -->
+    <section>
+      <div class="section-head">
+        <div class="section-title">Recommended for you</div>
+      </div>
+      <div id="recommended-grid" class="app-grid"></div>
+    </section>
 
-    <main>
-      <div id="message-area" style="text-align:center;margin:14px 0;color:#aaa">Loading apps…</div>
-      <div id="list" class="list"></div>
-    </main>
-
-    <footer>© 2025 GALAXY App Store. Made with ❤️</footer>
+    <!-- Main Category -->
+    <section>
+      <div class="section-head">
+        <div class="section-title" id="main-category-title">Games</div>
+      </div>
+      <div id="app-grid" class="app-grid"></div>
+    </section>
   </div>
 
+  <!-- Bottom Nav -->
   <nav class="bottom-nav">
-    <button class="bbtn" data-page="games">🎮<small>Games</small></button>
-    <button class="bbtn active" data-page="apps">📱<small>Apps</small></button>
-    <button class="bbtn" data-page="search">🔍<small>Search</small></button>
+    <button class="nav-btn active" onclick="renderCategory('games')">Games</button>
+    <button class="nav-btn" onclick="renderCategory('apps')">Apps</button>
+    <button class="nav-btn" onclick="renderCategory('tools')">Tools</button>
   </nav>
 
-  <!-- Search overlay -->
-  <div class="search-overlay" id="searchOverlay">
-    <div class="search-card">
-      <div class="search-row">
-        <input id="q" placeholder="Search apps…"/>
-        <button id="goSearch">Search</button>
-      </div>
-      <div id="sr" style="margin-top:10px;color:#aeb4c3;font-size:.9rem"></div>
-    </div>
-  </div>
-
   <script>
-    // ===== Firebase =====
-    const firebaseConfig={apiKey:"AIzaSyADlc_ZV7vdTQmdrpcYH1tRl05HU-898Kk",authDomain:"galaxyapkstore-5fb8a.firebaseapp.com",databaseURL:"https://galaxyapkstore-5fb8a-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"galaxyapkstore-5fb8a",storageBucket:"galaxyapkstore-5fb8a.firebasestorage.app",messagingSenderId:"122416439928",appId:"1:122416439928:web:8bbdc0a95ab7827b22c38d"};
+    // ===== Firebase Setup =====
+    const firebaseConfig = {
+      apiKey: "AIzaSyADlc_ZV7vdTQmdrpcYH1tRl05HU-898Kk",
+      authDomain: "galaxyapkstore-5fb8a.firebaseapp.com",
+      projectId: "galaxyapkstore-5fb8a",
+    };
     firebase.initializeApp(firebaseConfig);
-    const db=firebase.firestore();
+    const db = firebase.firestore();
 
-    // DOM
-    const listEl=document.getElementById('list');
-    const messageArea=document.getElementById('message-area');
-    const statCountBanner=document.getElementById('statCount');
-    const offlineBanner=document.getElementById('offlineBanner');
-    const chipsEl=document.getElementById('chips');
-    const tabsEl=document.getElementById('tabs');
-    const bannerEl=document.getElementById('banner');
-    const bannerArt=document.getElementById('bannerArt');
-    const bannerTitle=document.getElementById('bannerTitle');
-    const bannerSub=document.getElementById('bannerSub');
-    const bannerCta=document.getElementById('bannerCta');
+    let allApps = [];
 
-    let allApps=[];let currentSort='latest';
-    let activeChip='all'; // 'all' | 'cat:<label>'
-    let activeTab='for-you';
-
-    function updateOnline(){ offlineBanner.classList.toggle('show', !navigator.onLine); }
-    window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);updateOnline();
-
-    function setSkeleton(n=6){
-      messageArea.style.display='block';
-      listEl.innerHTML=Array.from({length:n}).map(()=>`
-        <div class="skeleton sk-row">
-          <div class="sk-avatar"></div>
-          <div>
-            <div class="sk-line" style="width:60%"></div>
-            <div class="sk-line" style="width:40%"></div>
-          </div>
-          <div class="sk-line" style="width:72px"></div>
-        </div>`).join('');
-    }
-    setSkeleton();
-
-    // Helpers
-    const MISC_NAMES=['other','misc','អ្វីផ្សេងៗ','ផ្សេងៗ','others'];
-    const isMisc=(cat)=>{const c=(cat||'').trim().toLowerCase();return !c || MISC_NAMES.includes(c)};
     function daysSince(date){ if(!date) return Infinity; const diff=Date.now()-date.getTime(); return Math.floor(diff/86400000); }
-    function relDayLabel(date){ const d=daysSince(date); if(d===0) return 'today'; if(d===1) return '1 day ago'; if(d<30) return d+' days ago'; const m=Math.floor(d/30); return m+ (m>1?' months':' month') +' ago'; }
+    function relDayLabel(date){ const d=daysSince(date); if(d===0) return 'today'; if(d===1) return '1 day ago'; if(d<30) return d+' days ago'; const m=Math.floor(d/30); return m+' months ago'; }
 
-    // Build dynamic chips
-    function buildChips(categories){
-      chipsEl.innerHTML='';
-      const misc=[]; const normal=[];
-      categories.forEach(label=>{ (isMisc(label)?misc:normal).push(label) });
-      const uniq=(arr)=>[...new Set(arr.filter(Boolean))];
-      const sorted=[...uniq(misc), ...uniq(normal).sort((a,b)=>a.localeCompare(b))];
-      const make=(key,label)=>{const b=document.createElement('button');b.className='chip';b.dataset.filter=key;b.textContent=label; if((key===activeChip)|| (activeChip==='all'&&key==='all')) b.classList.add('active'); return b};
-      chipsEl.appendChild(make('all','All'));
-      sorted.forEach(label=>chipsEl.appendChild(make('cat:'+label,label)));
+    // Render specific section
+    function renderSection(tag, containerId) {
+      const filtered = allApps.filter(app => app.tag === tag);
+      displayAppsInGrid(filtered, containerId);
     }
 
-    function render(){
-      let list=[...allApps];
-      // tab logic (basic demonstration)
-      if(activeTab==='top'){
-        // Sort by name as proxy to ranking
-        list.sort((a,b)=>a.name.localeCompare(b.name));
-      } else {
-        // latest first
-        list.sort((a,b)=>{
-          const at=a.updatedAt? a.updatedAt.getTime(): -1;
-          const bt=b.updatedAt? b.updatedAt.getTime(): -1;
-          if(at!==bt) return bt-at; return a.name.localeCompare(b.name);
-        });
-      }
-
-      // category filter
-      if(activeChip.startsWith('cat:')){
-        const label=activeChip.slice(4);
-        list=list.filter(x=>{
-          const c=(x.category||'').trim();
-          return isMisc(label) ? isMisc(c) : c.toLowerCase()===label.toLowerCase();
-        });
-      }
-
-      displayList(list);
+    // Render by category
+    function renderCategory(category) {
+      document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
+      document.querySelector(`.nav-btn[onclick="renderCategory('${category}')"]`).classList.add('active');
+      document.getElementById('main-category-title').textContent = category.charAt(0).toUpperCase() + category.slice(1);
+      const filtered = allApps.filter(app => app.category === category);
+      displayAppsInGrid(filtered, 'app-grid');
     }
 
-    function displayList(apps){
-      listEl.innerHTML='';
-      if(apps.length===0){messageArea.textContent='រកមិនឃើញ app!';messageArea.style.display='block';return}
-      messageArea.style.display='none';
-      const frag=document.createDocumentFragment();
-      apps.forEach(app=>{
-        const row=document.createElement('div');
-        row.className='row';
-        const isNew = daysSince(app.updatedAt) <= 14;
-        const meta = [app.version, app.size].filter(Boolean).join(' • ');
-        const upd = app.updatedAt ? ` · Updated ${relDayLabel(app.updatedAt)}` : '';
-        row.innerHTML=`
-          <img src="${app.logoUrl}" class="logo" alt="${app.name} logo" loading="lazy">
-          <div>
-            <div class="name">${isNew?'<span class="badge">NEW</span>':''}${app.name}</div>
-            <div class="meta">${meta || '—'}${upd}${app.category?` · <span class='pill'>${app.category}</span>`:''}</div>
-          </div>
-          <a class="btn-dl" href="${app.downloadLink}" target="_blank" rel="noopener" aria-label="Download ${app.name}">Install</a>
-        `;
-        frag.appendChild(row);
-      });
-      listEl.appendChild(frag);
-    }
-
-    // Firestore stream
-    db.collection('apps').onSnapshot(snap=>{
-      allApps=[];
-      if(snap.empty){
-        messageArea.textContent='មិនទាន់មាន apps ទេ!';
-        listEl.innerHTML='';
-        buildChips([]);
-        bannerEl.style.display='none';
+    // Display apps into grid
+    function displayAppsInGrid(apps, containerId) {
+      const grid = document.getElementById(containerId);
+      grid.innerHTML = '';
+      if (apps.length === 0) {
+        grid.innerHTML = '<p style="color:#aaa">No apps found</p>';
         return;
       }
-      const catSet=new Set();
-      let featured=null; // choose first with featured=true else most recent
-      snap.forEach(doc=>{
-        const d=doc.data();
-        const updated = d.updatedAt? (d.updatedAt.toDate? d.updatedAt.toDate(): new Date(d.updatedAt)) : null;
-        const category=(d.category||'').trim();
-        const item={
-          id:doc.id,
-          name:d.name||'Untitled',
-          logoUrl:d.logoUrl||'https://via.placeholder.com/256?text=App',
-          downloadLink:d.downloadLink||'#',
-          version:d.version||'v1.0',
-          size:d.size||'',
-          category,
-          updatedAt:updated,
-          featured:!!d.featured,
-          promoEnd:d.promoEnd||''
-        };
-        allApps.push(item);
-        catSet.add(isMisc(category)? 'អ្វីផ្សេងៗ' : category);
-        if(item.featured) featured=item;
+      apps.forEach(app => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        const isNew = daysSince(app.updatedAt) <= 14;
+        card.innerHTML = `
+          ${isNew ? '<span class="badge">NEW</span>' : ''}
+          <img src="${app.logoUrl}" class="logo" alt="${app.name} logo">
+          <div class="name">${app.name}</div>
+          <div class="meta">${app.version} • ${app.size}</div>
+          <div class="pill">${app.category || ''}</div>
+          <div class="meta">Updated ${relDayLabel(app.updatedAt)}</div>
+          <a class="btn-dl" href="${app.downloadLink}" target="_blank">Download</a>
+        `;
+        grid.appendChild(card);
       });
-      // pick latest if no explicit featured
-      if(!featured){
-        featured=[...allApps].sort((a,b)=>{
-          const at=a.updatedAt? a.updatedAt.getTime(): -1;
-          const bt=b.updatedAt? b.updatedAt.getTime(): -1;return bt-at;
-        })[0];
-      }
-      // build banner
-      if(featured){
-        bannerEl.style.display='grid';
-        bannerArt.src=featured.logoUrl;
-        bannerTitle.textContent=featured.name;
-        bannerSub.textContent= featured.promoEnd? `Ends on ${featured.promoEnd}` : (featured.updatedAt? `Updated ${relDayLabel(featured.updatedAt)}` : 'Featured app');
-        bannerCta.href=featured.downloadLink;
-      } else bannerEl.style.display='none';
+    }
 
-      buildChips(catSet);
-      render();
-    },err=>{console.error(err);messageArea.textContent='សូមពិនិត្យការតភ្ជាប់ ឬ Firebase setup!'});
-
-    // Events
-    document.getElementById('openSearch').addEventListener('click',()=>{document.getElementById('searchOverlay').style.display='flex';document.getElementById('q').focus()});
-    document.getElementById('goSearch').addEventListener('click',()=>{
-      const q=document.getElementById('q').value.trim().toLowerCase();
-      const results=allApps.filter(a=>a.name.toLowerCase().includes(q)|| (a.category||'').toLowerCase().includes(q));
-      document.getElementById('sr').textContent=`${results.length} result(s)`;
-      displayList(results);
+    // Load apps from Firestore
+    db.collection('apps').onSnapshot(snap => {
+      allApps = [];
+      snap.forEach(doc => {
+        const d = doc.data();
+        allApps.push({
+          id: doc.id,
+          ...d,
+          updatedAt: d.updatedAt ? (d.updatedAt.toDate ? d.updatedAt.toDate() : new Date(d.updatedAt)) : null
+        });
+      });
+      // Render sections
+      renderSection('suggested', 'suggested-grid');
+      renderSection('recommended', 'recommended-grid');
+      renderCategory('games'); // default
     });
-    document.getElementById('searchOverlay').addEventListener('click',e=>{ if(e.target.id==='searchOverlay') e.currentTarget.style.display='none';});
-
-    tabsEl.addEventListener('click',e=>{
-      const t=e.target.closest('.tab'); if(!t) return; tabsEl.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); activeTab=t.dataset.tab; render();
-    });
-
-    chipsEl.addEventListener('click',e=>{
-      const btn=e.target.closest('.chip'); if(!btn) return; chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); activeChip=btn.dataset.filter||'all'; render();
-    });
-
-    document.querySelector('.bottom-nav').addEventListener('click',e=>{
-      const b=e.target.closest('.bbtn'); if(!b) return; document.querySelectorAll('.bbtn').forEach(x=>x.classList.remove('active')); b.classList.add('active');
-      if(b.dataset.page==='search'){document.getElementById('searchOverlay').style.display='flex';document.getElementById('q').focus();}
-      if(b.dataset.page==='games'){activeChip='cat:Games'; chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active', x.dataset.filter===activeChip)); render();}
-      if(b.dataset.page==='apps'){activeChip='all'; chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.toggle('active', x.dataset.filter==='all')); render();}
-    });
-
-    document.getElementById('scrollToApps').addEventListener('click',()=>{document.querySelector('.section-head').scrollIntoView({behavior:'smooth'})});
   </script>
 </body>
 </html>
