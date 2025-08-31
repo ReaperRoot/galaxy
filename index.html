@@ -16,7 +16,7 @@
     body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
     .container{max-width:1100px;margin:0 auto;padding:var(--pad)}
 
-    /* ===== Topbar (brand only) ===== */
+    /* ===== Topbar ===== */
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
     .brand{font-weight:800;font-size:1.25rem;background:var(--grad);-webkit-background-clip:text;color:transparent;letter-spacing:.2px}
     .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
@@ -35,29 +35,22 @@
     .stat .big{font-size:1.15rem;font-weight:800}
     .stat .small{font-size:.82rem;color:var(--muted)}
 
-    /* ===== Section ===== */
-    .section-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 12px}
-    .section-title{font-size:1.25rem;font-weight:800;position:relative}
-    .section-title::after{content:"";display:block;height:2px;width:64px;margin-top:6px;background:var(--grad);border-radius:2px}
-    .chips{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
-    .chips::-webkit-scrollbar{display:none}
-    .chip{padding:8px 14px;border-radius:999px;background:#23252a;color:#cfd3db;border:1px solid rgba(255,255,255,.1);cursor:pointer;font-weight:800;white-space:nowrap;min-width:64px;text-align:center}
-    .chip.active{background:linear-gradient(90deg,#31345a,#2d2e48);border-color:rgba(99,102,241,.5)}
+    /* ===== Horizontal App Row ===== */
+    #app-grid{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+    #app-grid::-webkit-scrollbar{display:none}
 
-    /* ===== Grid & Cards ===== */
-    #app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--gap)}
-    .card{position:relative;background:#1c1c21;padding:14px;border-radius:var(--radius);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.45);transition:.35s;opacity:0;transform:translateY(10px)}
+    /* ===== Cards (compact) ===== */
+    .card{flex:0 0 auto;min-width:190px;scroll-snap-align:start;position:relative;background:#1c1c21;padding:12px;border-radius:var(--radius);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.45);transition:.35s;opacity:0;transform:translateY(10px)}
     .card.show{opacity:1;transform:translateY(0)}
-    .logo{width:76px;height:76px;border-radius:16px;object-fit:cover;border:1px solid rgba(255,255,255,.08);margin:0 auto 10px}
-    .name{font-weight:800}
-    .meta{font-size:.85rem;color:var(--muted);margin-top:2px}
-    .pill{display:inline-block;margin-top:6px;font-size:.72rem;color:#e7e7ea;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:4px 8px;border-radius:999px}
-    .badge{position:absolute;left:10px;top:10px;font-size:.7rem;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:3px 8px;border-radius:999px}
+    .logo{width:56px;height:56px;border-radius:12px;object-fit:cover;border:1px solid rgba(255,255,255,.08);margin:0 auto 10px}
+    .name{font-size:.95rem;font-weight:800}
+    .meta{font-size:.8rem;color:var(--muted);margin-top:2px}
+    .pill{display:inline-block;margin-top:6px;font-size:.7rem;color:#e7e7ea;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:3px 6px;border-radius:999px}
+    .badge{position:absolute;left:10px;top:10px;font-size:.68rem;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:2px 7px;border-radius:999px}
 
     /* ===== Download Row: horizontal & compact ===== */
-    .btn-row{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:10px;overflow-x:auto;padding-bottom:4px;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .btn-row{display:flex;gap:6px;align-items:center;justify-content:center;margin-top:8px;overflow-x:auto;padding-bottom:4px;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none}
     .btn-row::-webkit-scrollbar{display:none}
-
     .btn-dl{display:inline-flex;align-items:center;justify-content:center;height:30px;padding:0 10px;border-radius:999px;text-decoration:none;font-weight:800;font-size:.82rem;background:#2a2d39;color:#e7e7ea;border:1px solid rgba(255,255,255,.14);transition:transform .15s ease, opacity .15s ease}
     .btn-dl:hover{transform:translateY(-1px);opacity:.95}
     .btn-dl.primary{background:var(--grad);color:#fff;border-color:transparent}
@@ -67,9 +60,9 @@
     .skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shine 1.2s infinite}
     @keyframes shine{to{transform:translateX(100%)}}
     .sk-card{padding:14px}
-    .sk-avatar{width:76px;height:76px;border-radius:16px;margin:0 auto 10px}
+    .sk-avatar{width:56px;height:56px;border-radius:12px;margin:0 auto 10px}
     .sk-line{height:12px;border-radius:8px;margin:8px auto}
-    .sk-btn{height:34px;border-radius:10px}
+    .sk-btn{height:28px;border-radius:10px}
 
     footer{text-align:center;color:#7a7f8a;padding:18px;margin-top:22px;border-top:1px solid rgba(255,255,255,.08)}
     .offline{display:none;text-align:center;background:#241f1f;color:#f2dede;border:1px solid #5c3434;padding:8px;border-radius:10px;margin:10px 0}
@@ -83,7 +76,6 @@
   <div class="container">
     <div class="topbar">
       <div class="brand">GALAXY App Store</div>
-      <!-- search area removed -->
     </div>
 
     <div id="offlineBanner" class="offline">You are offline. Browsing cached UI.</div>
@@ -97,19 +89,10 @@
       </div>
       <div class="stats">
         <div class="stat"><div class="big" id="statCount">0+</div><div class="small">Apps</div></div>
-        <div class="stat"><div class="big">1‑click</div><div class="small">Download</div></div>
+        <div class="stat"><div class="big">1-click</div><div class="small">Download</div></div>
         <div class="stat"><div class="big">⚡</div><div class="small">Smooth UI</div></div>
       </div>
     </section>
-
-    <div class="section-head">
-      <div class="section-title">Trending & New</div>
-      <div class="chips" id="chips">
-        <button class="chip active" data-filter="all">All</button>
-        <button class="chip" data-filter="a-m">A–M</button>
-        <button class="chip" data-filter="n-z">N–Z</button>
-      </div>
-    </div>
 
     <main>
       <div id="message-area" style="text-align:center;margin:14px 0;color:#aaa">Loading apps…</div>
@@ -175,10 +158,15 @@
 
     function render(){
       let list=[...allApps];
-      if(currentSort==='az') list.sort((a,b)=>a.name.localeCompare(b.name));
-      const active=document.querySelector('.chip.active')?.dataset.filter||'all';
-      if(active==='a-m') list=list.filter(x=>/^([a-mA-M]).*/.test(x.name||''));
-      if(active==='n-z') list=list.filter(x=>/^([n-zN-Z]).*/.test(x.name||''));
+      if(currentSort==='latest'){
+        list.sort((a,b)=>{
+          const at=a.updatedAt ? a.updatedAt.getTime() : 0;
+          const bt=b.updatedAt ? b.updatedAt.getTime() : 0;
+          return bt - at; // newest first
+        });
+      }else{
+        list.sort((a,b)=>a.name.localeCompare(b.name));
+      }
       displayApps(list);
     }
 
@@ -226,9 +214,14 @@
     }
 
     // Events
-    sortToggle.addEventListener('click',()=>{currentSort=currentSort==='latest'?'az':'latest';sortToggle.textContent='Sort: '+(currentSort==='latest'?'Latest':'A–Z');render()});
-    document.getElementById('chips').addEventListener('click',e=>{const btn=e.target.closest('.chip'); if(!btn) return; document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); render();});
-    document.getElementById('scrollToApps').addEventListener('click',()=>{document.getElementById('app-grid').scrollIntoView({behavior:'smooth'})});
+    sortToggle.addEventListener('click',()=>{
+      currentSort=currentSort==='latest'?'az':'latest';
+      sortToggle.textContent='Sort: '+(currentSort==='latest'?'Latest':'A–Z');
+      render();
+    });
+    document.getElementById('scrollToApps').addEventListener('click',()=>{
+      document.getElementById('app-grid').scrollIntoView({behavior:'smooth'})
+    });
   </script>
 </body>
 </html>
