@@ -11,152 +11,205 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
   <style>
-    :root{--bg:#0f0f11;--surface:#16171a;--surface-2:#1b1d22;--text:#f5f7fb;--muted:#a2a8b4;--grad:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);--radius:16px;--gap:14px;--pad:16px;}
+    :root{--bg:#0f0f11;--surface:#16171a;--surface-2:#1b1d22;--text:#f5f7fb;--muted:#a2a8b4;--grad:linear-gradient(90deg,#6366f1,#a855f7,#ec4899);--radius:16px;--gap:14px;--pad:16px;--ring:0 0 0 2px rgba(99,102,241,.45)}
     *{box-sizing:border-box;margin:0;padding:0}
-    body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+    body{font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,Inter,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
     .container{max-width:1100px;margin:0 auto;padding:var(--pad)}
 
+    /* ===== Topbar (brand only) ===== */
     .topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0}
-    .brand{font-weight:800;font-size:1.25rem;background:var(--grad);-webkit-background-clip:text;color:transparent}
+    .brand{font-weight:800;font-size:1.25rem;background:var(--grad);-webkit-background-clip:text;color:transparent;letter-spacing:.2px}
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
 
+    /* ===== Hero ===== */
+    .hero{margin:6px 0 20px;background:var(--surface-2);border-radius:20px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.06)}
+    .headline{font-size:1.9rem;font-weight:900;background:var(--grad);-webkit-background-clip:text;color:transparent;letter-spacing:.25px;margin-bottom:6px}
+    .sub{color:var(--muted);margin-top:6px}
+    .hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+    .btn{padding:10px 16px;border-radius:12px;border:0;cursor:pointer;font-weight:800;transition:transform .15s ease}
+    .btn:active{transform:scale(.98)}
+    .btn.primary{background:var(--grad);color:#fff}
+    .btn.secondary{background:#23252a;color:#e7e7ea;border:1px solid rgba(255,255,255,.12)}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:16px}
+    .stat{background:#1c1e24;border:1px solid rgba(255,255,255,.06);border-radius:12px;padding:12px;text-align:center}
+    .stat .big{font-size:1.15rem;font-weight:800}
+    .stat .small{font-size:.82rem;color:var(--muted)}
+
+    /* ===== Section ===== */
     .section-head{display:flex;align-items:center;justify-content:space-between;margin:18px 0 12px}
     .section-title{font-size:1.25rem;font-weight:800;position:relative}
     .section-title::after{content:"";display:block;height:2px;width:64px;margin-top:6px;background:var(--grad);border-radius:2px}
+    .chips{display:flex;gap:8px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+    .chips::-webkit-scrollbar{display:none}
+    .chip{padding:8px 14px;border-radius:999px;background:#23252a;color:#cfd3db;border:1px solid rgba(255,255,255,.1);cursor:pointer;font-weight:800;white-space:nowrap;min-width:64px;text-align:center}
+    .chip.active{background:linear-gradient(90deg,#31345a,#2d2e48);border-color:rgba(99,102,241,.5)}
 
-    .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--gap)}
-    .card{position:relative;background:#1c1c21;padding:14px;border-radius:var(--radius);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.45)}
+    /* ===== Grid & Cards ===== */
+    #app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:var(--gap)}
+    .card{position:relative;background:#1c1c21;padding:14px;border-radius:var(--radius);text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.45);transition:.35s;opacity:0;transform:translateY(10px)}
+    .card.show{opacity:1;transform:translateY(0)}
     .logo{width:76px;height:76px;border-radius:16px;object-fit:cover;border:1px solid rgba(255,255,255,.08);margin:0 auto 10px}
     .name{font-weight:800}
     .meta{font-size:.85rem;color:var(--muted);margin-top:2px}
-    .pill{display:inline-block;margin-top:6px;font-size:.72rem;color:#e7e7ea;background:#26283a;padding:4px 8px;border-radius:999px}
-    .badge{position:absolute;left:10px;top:10px;font-size:.7rem;background:#26283a;padding:3px 8px;border-radius:999px}
-    .btn-dl{display:inline-block;margin-top:10px;padding:8px 14px;border-radius:10px;text-decoration:none;font-weight:800;background:var(--grad);color:#fff}
+    .pill{display:inline-block;margin-top:6px;font-size:.72rem;color:#e7e7ea;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:4px 8px;border-radius:999px}
+    .badge{position:absolute;left:10px;top:10px;font-size:.7rem;background:#26283a;border:1px solid rgba(255,255,255,.14);padding:3px 8px;border-radius:999px}
+    .btn-row{display:flex;gap:8px;margin-top:10px}
+    .btn-dl{flex:1;display:inline-flex;align-items:center;justify-content:center;height:36px;border-radius:10px;text-decoration:none;font-weight:800;background:var(--grad);color:#fff}
 
-    .tabs{display:flex;gap:10px;border-bottom:1px solid rgba(255,255,255,.1);margin-bottom:14px}
-    .tab{flex:1;text-align:center;padding:10px;cursor:pointer;font-weight:600;background:transparent;color:var(--muted)}
-    .tab.active{color:#fff;border-bottom:3px solid #6366f1}
+    /* ===== Skeleton ===== */
+    .skeleton{position:relative;overflow:hidden;background:#222;border-radius:var(--radius)}
+    .skeleton::after{content:"";position:absolute;inset:0;transform:translateX(-100%);background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shine 1.2s infinite}
+    @keyframes shine{to{transform:translateX(100%)}}
+    .sk-card{padding:14px}
+    .sk-avatar{width:76px;height:76px;border-radius:16px;margin:0 auto 10px}
+    .sk-line{height:12px;border-radius:8px;margin:8px auto}
+    .sk-btn{height:34px;border-radius:10px}
 
-    .bottom-nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#16171a;border-top:1px solid rgba(255,255,255,.1)}
-    .nav-btn{flex:1;padding:12px;color:#aaa;font-weight:700;text-align:center;cursor:pointer}
-    .nav-btn.active{color:#fff;background:linear-gradient(90deg,#6366f1,#a855f7)}
+    footer{text-align:center;color:#7a7f8a;padding:18px;margin-top:22px;border-top:1px solid rgba(255,255,255,.08)}
+    .offline{display:none;text-align:center;background:#241f1f;color:#f2dede;border:1px solid #5c3434;padding:8px;border-radius:10px;margin:10px 0}
+    .offline.show{display:block}
+
+    @media (max-width:760px){.headline{font-size:1.65rem}.stat .big{font-size:1.05rem}}
   </style>
 </head>
 <body>
+  <h1 class="visually-hidden">GALAXY App Store – APKs</h1>
   <div class="container">
     <div class="topbar">
       <div class="brand">GALAXY App Store</div>
+      <!-- search area removed -->
     </div>
 
-    <!-- Tabs -->
-    <div class="tabs">
-      <button class="tab active" data-tab="for-you">For you</button>
-      <button class="tab" data-tab="top-charts">Top charts</button>
-      <button class="tab" data-tab="categories">Categories</button>
+    <div id="offlineBanner" class="offline">You are offline. Browsing cached UI.</div>
+
+    <section class="hero">
+      <div class="headline"> ដោនឡូត ភ្លាមៗ</div>
+      <p class="sub"> APK MODMENU FILE TOOLS MediaFire/Cloud។</p>
+      <div class="hero-actions">
+        <button class="btn primary" id="scrollToApps">Browse Apps</button>
+        <button class="btn secondary" id="sortToggle">Sort: Latest</button>
+      </div>
+      <div class="stats">
+        <div class="stat"><div class="big" id="statCount">0+</div><div class="small">Apps</div></div>
+        <div class="stat"><div class="big">1‑click</div><div class="small">Download</div></div>
+        <div class="stat"><div class="big">⚡</div><div class="small">Smooth UI</div></div>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <div class="section-title">Trending & New</div>
+      <div class="chips" id="chips">
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="a-m">A–M</button>
+        <button class="chip" data-filter="n-z">N–Z</button>
+      </div>
     </div>
 
-    <!-- Suggested -->
-    <section>
-      <div class="section-head">
-        <div class="section-title">Suggested for you</div>
-      </div>
-      <div id="suggested-grid" class="app-grid"></div>
-    </section>
+    <main>
+      <div id="message-area" style="text-align:center;margin:14px 0;color:#aaa">Loading apps…</div>
+      <div id="app-grid"></div>
+    </main>
 
-    <!-- Recommended -->
-    <section>
-      <div class="section-head">
-        <div class="section-title">Recommended for you</div>
-      </div>
-      <div id="recommended-grid" class="app-grid"></div>
-    </section>
-
-    <!-- Main Category -->
-    <section>
-      <div class="section-head">
-        <div class="section-title" id="main-category-title">Games</div>
-      </div>
-      <div id="app-grid" class="app-grid"></div>
-    </section>
+    <footer>© 2025 GALAXY App Store. Made with ❤️</footer>
   </div>
 
-  <!-- Bottom Nav -->
-  <nav class="bottom-nav">
-    <button class="nav-btn active" onclick="renderCategory('games')">Games</button>
-    <button class="nav-btn" onclick="renderCategory('apps')">Apps</button>
-    <button class="nav-btn" onclick="renderCategory('tools')">Tools</button>
-  </nav>
-
   <script>
-    // ===== Firebase Setup =====
-    const firebaseConfig = {
-      apiKey: "AIzaSyADlc_ZV7vdTQmdrpcYH1tRl05HU-898Kk",
-      authDomain: "galaxyapkstore-5fb8a.firebaseapp.com",
-      projectId: "galaxyapkstore-5fb8a",
-    };
+    // ===== Firebase =====
+    const firebaseConfig={apiKey:"AIzaSyADlc_ZV7vdTQmdrpcYH1tRl05HU-898Kk",authDomain:"galaxyapkstore-5fb8a.firebaseapp.com",databaseURL:"https://galaxyapkstore-5fb8a-default-rtdb.asia-southeast1.firebasedatabase.app",projectId:"galaxyapkstore-5fb8a",storageBucket:"galaxyapkstore-5fb8a.firebasestorage.app",messagingSenderId:"122416439928",appId:"1:122416439928:web:8bbdc0a95ab7827b22c38d"};
     firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
+    const db=firebase.firestore();
 
-    let allApps = [];
+    const appGrid=document.getElementById('app-grid');
+    const messageArea=document.getElementById('message-area');
+    const statCount=document.getElementById('statCount');
+    const sortToggle=document.getElementById('sortToggle');
+    const offlineBanner=document.getElementById('offlineBanner');
 
-    function daysSince(date){ if(!date) return Infinity; const diff=Date.now()-date.getTime(); return Math.floor(diff/86400000); }
-    function relDayLabel(date){ const d=daysSince(date); if(d===0) return 'today'; if(d===1) return '1 day ago'; if(d<30) return d+' days ago'; const m=Math.floor(d/30); return m+' months ago'; }
+    let allApps=[];let currentSort='latest';
 
-    // Render specific section
-    function renderSection(tag, containerId) {
-      const filtered = allApps.filter(app => app.tag === tag);
-      displayAppsInGrid(filtered, containerId);
+    function updateOnline(){ offlineBanner.classList.toggle('show', !navigator.onLine); }
+    window.addEventListener('online',updateOnline);window.addEventListener('offline',updateOnline);updateOnline();
+
+    function setSkeleton(n=8){
+      messageArea.style.display='block';
+      appGrid.innerHTML = Array.from({length:n}).map(()=>`
+        <div class="skeleton sk-card">
+          <div class="sk-avatar"></div>
+          <div class="sk-line" style="width:70%"></div>
+          <div class="sk-line" style="width:40%"></div>
+          <div class="sk-btn" style="width:100%;margin-top:8px"></div>
+        </div>`).join('');
     }
+    setSkeleton();
 
-    // Render by category
-    function renderCategory(category) {
-      document.querySelectorAll('.nav-btn').forEach(n=>n.classList.remove('active'));
-      document.querySelector(`.nav-btn[onclick="renderCategory('${category}')"]`).classList.add('active');
-      document.getElementById('main-category-title').textContent = category.charAt(0).toUpperCase() + category.slice(1);
-      const filtered = allApps.filter(app => app.category === category);
-      displayAppsInGrid(filtered, 'app-grid');
-    }
-
-    // Display apps into grid
-    function displayAppsInGrid(apps, containerId) {
-      const grid = document.getElementById(containerId);
-      grid.innerHTML = '';
-      if (apps.length === 0) {
-        grid.innerHTML = '<p style="color:#aaa">No apps found</p>';
-        return;
-      }
-      apps.forEach(app => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        const isNew = daysSince(app.updatedAt) <= 14;
-        card.innerHTML = `
-          ${isNew ? '<span class="badge">NEW</span>' : ''}
-          <img src="${app.logoUrl}" class="logo" alt="${app.name} logo">
-          <div class="name">${app.name}</div>
-          <div class="meta">${app.version} • ${app.size}</div>
-          <div class="pill">${app.category || ''}</div>
-          <div class="meta">Updated ${relDayLabel(app.updatedAt)}</div>
-          <a class="btn-dl" href="${app.downloadLink}" target="_blank">Download</a>
-        `;
-        grid.appendChild(card);
-      });
-    }
-
-    // Load apps from Firestore
-    db.collection('apps').onSnapshot(snap => {
-      allApps = [];
-      snap.forEach(doc => {
-        const d = doc.data();
+    db.collection('apps').onSnapshot(snap=>{
+      allApps=[];
+      if(snap.empty){messageArea.textContent='មិនទាន់មាន apps ទេ!';appGrid.innerHTML='';statCount.textContent='0';return;}
+      snap.forEach(doc=>{
+        const d=doc.data();
         allApps.push({
-          id: doc.id,
-          ...d,
-          updatedAt: d.updatedAt ? (d.updatedAt.toDate ? d.updatedAt.toDate() : new Date(d.updatedAt)) : null
+          id:doc.id,
+          name:d.name||'Untitled',
+          logoUrl:d.logoUrl||'https://via.placeholder.com/256?text=App',
+          downloadLink:d.downloadLink||'#',
+          version:d.version||'v1.0',
+          size:d.size||'',
+          category:d.category||'',
+          updatedAt:d.updatedAt? (d.updatedAt.toDate? d.updatedAt.toDate(): new Date(d.updatedAt)) : null
         });
       });
-      // Render sections
-      renderSection('suggested', 'suggested-grid');
-      renderSection('recommended', 'recommended-grid');
-      renderCategory('games'); // default
-    });
+      statCount.textContent=allApps.length+"+";
+      messageArea.style.display='none';
+      render();
+    },err=>{messageArea.textContent='សូមពិនិត្យការតភ្ជាប់ ឬ Firebase setup!'});
+
+    function daysSince(date){ if(!date) return Infinity; const diff=Date.now()-date.getTime(); return Math.floor(diff/86400000); }
+    function relDayLabel(date){ const d=daysSince(date); if(d===0) return 'today'; if(d===1) return '1 day ago'; if(d<30) return d+' days ago'; const m=Math.floor(d/30); return m+ (m>1?' months':' month') +' ago'; }
+
+    function render(){
+      let list=[...allApps];
+      if(currentSort==='az') list.sort((a,b)=>a.name.localeCompare(b.name));
+      const active=document.querySelector('.chip.active')?.dataset.filter||'all';
+      if(active==='a-m') list=list.filter(x=>/^([a-mA-M]).*/.test(x.name||''));
+      if(active==='n-z') list=list.filter(x=>/^([n-zN-Z]).*/.test(x.name||''));
+      displayApps(list);
+    }
+
+    const io=new IntersectionObserver((entries)=>{
+      entries.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add('show'); io.unobserve(en.target);} });
+    },{root:null,threshold:.1});
+
+    function displayApps(apps){
+      appGrid.innerHTML='';
+      if(apps.length===0){messageArea.textContent='រកមិនឃើញ app!';messageArea.style.display='block';return;}
+      messageArea.style.display='none';
+      const frag=document.createDocumentFragment();
+      apps.forEach(app=>{
+        const card=document.createElement('div');
+        card.className='card';
+        const isNew = daysSince(app.updatedAt) <= 14;
+        const meta = [app.version, app.size].filter(Boolean).join(' • ');
+        const cat = app.category ? `<span class="pill">${app.category}</span>` : '';
+        const upd = app.updatedAt ? `<div class="meta">Updated ${relDayLabel(app.updatedAt)}</div>` : '';
+        card.innerHTML=`
+          ${isNew?'<span class="badge">NEW</span>':''}
+          <img src="${app.logoUrl}" class="logo" alt="${app.name} logo" loading="lazy">
+          <div class="name">${app.name}</div>
+          <div class="meta">${meta || '—'}</div>
+          ${cat}
+          ${upd}
+          <div class="btn-row">
+            <a class="btn-dl" href="${app.downloadLink}" target="_blank" rel="noopener" aria-label="Download ${app.name}">Download</a>
+          </div>`;
+        frag.appendChild(card); io.observe(card);
+      });
+      appGrid.appendChild(frag);
+    }
+
+    // Events
+    sortToggle.addEventListener('click',()=>{currentSort=currentSort==='latest'?'az':'latest';sortToggle.textContent='Sort: '+(currentSort==='latest'?'Latest':'A–Z');render()});
+    document.getElementById('chips').addEventListener('click',e=>{const btn=e.target.closest('.chip'); if(!btn) return; document.querySelectorAll('.chip').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); render();});
+    document.getElementById('scrollToApps').addEventListener('click',()=>{document.getElementById('app-grid').scrollIntoView({behavior:'smooth'})});
   </script>
 </body>
 </html>
